@@ -32,34 +32,30 @@ export default function FanApp({ role, venue, matches, incidents, refreshInciden
 
                 {/* Venue header */}
                 <header
-                    className="relative overflow-hidden rounded-2xl mb-6 p-6 md:p-8"
+                    className="relative rounded-2xl mb-6 p-6 md:p-8"
                     style={{
-                        background: "linear-gradient(135deg, rgba(245,184,0,0.08) 0%, rgba(8,15,40,0.95) 50%, rgba(0,196,140,0.06) 100%)",
-                        border: "1px solid rgba(245,184,0,0.15)",
+                        background: "var(--bg-surface)",
+                        border: "1px solid rgba(255,255,255,0.09)",
                     }}
                 >
-                    <div className="absolute inset-0 bg-mesh opacity-30 rounded-2xl" aria-hidden="true" />
-                    {/* Scan-line effect */}
-                    <div className="absolute inset-0 overflow-hidden rounded-2xl scan-line" aria-hidden="true" />
-
-                    <div className="relative flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4">
                             <div
-                                className="hidden sm:flex w-12 h-12 items-center justify-center rounded-xl flex-shrink-0"
-                                style={{ background: "rgba(245,184,0,0.12)", border: "1px solid rgba(245,184,0,0.28)" }}
+                                className="hidden sm:flex w-11 h-11 items-center justify-center rounded-xl flex-shrink-0"
+                                style={{ background: "rgba(245,184,0,0.10)", border: "1px solid rgba(245,184,0,0.22)" }}
                             >
-                                <Users size={22} style={{ color: "var(--brand)" }} />
+                                <Users size={20} style={{ color: "var(--brand)" }} />
                             </div>
                             <div>
                                 <div className="text-[10px] font-mono tracking-widest mb-1" style={{ color: "var(--brand)" }}>
                                     FAN HUB · {role.toUpperCase()}
                                 </div>
-                                <h1 className="font-display text-3xl md:text-4xl leading-none text-white">
+                                <h1 className="font-display text-2xl md:text-3xl leading-none text-white">
                                     {venue ? venue.name : "Select a venue"}
                                 </h1>
                                 {venue && (
-                                    <div className="flex items-center gap-2 mt-2 text-sm font-mono" style={{ color: "var(--text-secondary)" }}>
-                                        <MapPin size={13} />
+                                    <div className="flex items-center gap-2 mt-1.5 text-sm font-mono" style={{ color: "var(--text-secondary)" }}>
+                                        <MapPin size={12} />
                                         {venue.city} · {venue.country} · Cap {venue.capacity.toLocaleString()}
                                     </div>
                                 )}
@@ -70,8 +66,8 @@ export default function FanApp({ role, venue, matches, incidents, refreshInciden
                         <div
                             className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full"
                             style={{
-                                background: `${activeTab.accent}15`,
-                                border: `1px solid ${activeTab.accent}30`,
+                                background: `${activeTab.accent}12`,
+                                border: `1px solid ${activeTab.accent}28`,
                             }}
                         >
                             <activeTab.Icon size={12} style={{ color: activeTab.accent }} />

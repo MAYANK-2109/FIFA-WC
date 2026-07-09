@@ -5,7 +5,7 @@ import IncidentBoard from "../components/IncidentBoard";
 import OpsInsights from "../components/OpsInsights";
 import SustainabilityPanel from "../components/SustainabilityPanel";
 import ScoreboardTicker from "../components/ScoreboardTicker";
-import { Trophy, MapPin, Activity } from "lucide-react";
+import { Trophy, MapPin } from "lucide-react";
 
 export default function OpsCommand({ role, venue, matches, incidents, refreshIncidents }) {
     const [refreshKey, setRefreshKey] = useState(0);
@@ -18,62 +18,44 @@ export default function OpsCommand({ role, venue, matches, incidents, refreshInc
 
                 {/* Command header */}
                 <header
-                    className="relative overflow-hidden rounded-2xl mb-6 p-6 md:p-8"
+                    className="relative rounded-2xl mb-6 p-6 md:p-8"
                     style={{
-                        background: "linear-gradient(135deg, rgba(245,184,0,0.08) 0%, rgba(8,15,40,0.95) 45%, rgba(56,189,248,0.06) 100%)",
-                        border: "1px solid rgba(245,184,0,0.15)",
+                        background: "var(--bg-surface)",
+                        border: "1px solid rgba(255,255,255,0.09)",
+                        borderLeft: "3px solid var(--brand)",
                     }}
                 >
-                    <div className="absolute inset-0 bg-mesh opacity-25 rounded-2xl" aria-hidden="true" />
-                    {/* Gold scan-line */}
-                    <div className="absolute inset-0 overflow-hidden rounded-2xl scan-line" aria-hidden="true" />
-
-                    {/* Left gold accent strip */}
-                    <div
-                        className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
-                        style={{ background: "linear-gradient(to bottom, var(--brand), var(--emerald))" }}
-                        aria-hidden="true"
-                    />
-
-                    <div className="relative flex items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4">
                         <div className="flex items-center gap-4">
                             <div
-                                className="hidden sm:flex w-12 h-12 items-center justify-center rounded-xl flex-shrink-0"
-                                style={{ background: "rgba(245,184,0,0.12)", border: "1px solid rgba(245,184,0,0.30)" }}
+                                className="hidden sm:flex w-11 h-11 items-center justify-center rounded-xl flex-shrink-0"
+                                style={{ background: "rgba(245,184,0,0.10)", border: "1px solid rgba(245,184,0,0.22)" }}
                             >
-                                <Trophy size={22} style={{ color: "var(--brand)" }} />
+                                <Trophy size={20} style={{ color: "var(--brand)" }} />
                             </div>
                             <div>
                                 <div className="text-[10px] font-mono tracking-widest mb-1" style={{ color: "var(--brand)" }}>
                                     OPS CENTRE · {role.toUpperCase()}
                                 </div>
-                                <h1 className="font-display text-3xl md:text-4xl leading-none text-white">
+                                <h1 className="font-display text-2xl md:text-3xl leading-none text-white">
                                     {venue ? venue.name : "Select a venue"}
                                 </h1>
                                 {venue && (
-                                    <div className="flex items-center gap-2 mt-2 text-sm font-mono" style={{ color: "var(--text-secondary)" }}>
-                                        <MapPin size={13} />
+                                    <div className="flex items-center gap-2 mt-1.5 text-sm font-mono" style={{ color: "var(--text-secondary)" }}>
+                                        <MapPin size={12} />
                                         {venue.city} · {venue.country} · Cap {venue.capacity.toLocaleString()}
                                     </div>
                                 )}
                             </div>
                         </div>
 
-                        {/* Live pill */}
-                        <div className="flex flex-col items-end gap-2">
+                        <div className="flex items-center gap-2">
                             <div
                                 className="flex items-center gap-2 px-3 py-1.5 rounded-full"
-                                style={{ background: "rgba(0,196,140,0.10)", border: "1px solid rgba(0,196,140,0.25)" }}
+                                style={{ background: "rgba(0,196,140,0.09)", border: "1px solid rgba(0,196,140,0.22)" }}
                             >
                                 <span className="live-dot" aria-hidden="true" />
                                 <span className="text-[10px] font-mono tracking-widest" style={{ color: "var(--emerald)" }}>LIVE OPS</span>
-                            </div>
-                            <div
-                                className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono tracking-widest"
-                                style={{ color: "var(--text-muted)" }}
-                            >
-                                <Activity size={11} />
-                                COMMAND ACTIVE
                             </div>
                         </div>
                     </div>
