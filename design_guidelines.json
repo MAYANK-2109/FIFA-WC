@@ -1,0 +1,159 @@
+{
+  "theme": "dark",
+  "archetype": "The Performance Pro & Swiss Brutalism (Editorial Sports-Tech)",
+  "typography": {
+    "fonts": {
+      "heading": "Oswald",
+      "body": "IBM Plex Sans",
+      "mono": "IBM Plex Mono",
+      "installation": "Add Google Fonts link in index.html for Oswald, IBM Plex Sans, and IBM Plex Mono."
+    },
+    "rules": [
+      "Headings (Oswald) MUST be uppercase and use tracking-tight or tracking-tighter for a heavy-weight athletic scoreboard feel.",
+      "Body text (IBM Plex Sans) MUST use increased tracking for legibility.",
+      "Numbers, timers, and KPI data points MUST use IBM Plex Mono.",
+      "Never center align body text. Always left-align paragraphs, inputs, or dense content.",
+      "Use radical weight contrast: Font-black for hero text, font-light for sub-headers."
+    ],
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl uppercase tracking-tighter font-black leading-none",
+      "h2": "text-3xl sm:text-4xl uppercase tracking-tight font-bold",
+      "h3": "text-xl sm:text-2xl uppercase tracking-tight font-semibold",
+      "body": "text-base tracking-wide font-normal",
+      "kpi": "text-4xl font-mono tracking-tighter text-white"
+    }
+  },
+  "colors": {
+    "background": {
+      "base": "#0A0A0A",
+      "surface": "#121212",
+      "surface_elevated": "#1A1A1A"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A0A0A0",
+      "muted": "#737373"
+    },
+    "brand": {
+      "primary": "#FF1E56",
+      "primary_hover": "#D81143"
+    },
+    "kinetic_accents": {
+      "volt_green": "#CCFF00",
+      "stadium_blue": "#00E5FF",
+      "alert_yellow": "#FFD600"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.1)",
+      "strong": "rgba(255, 255, 255, 0.2)"
+    },
+    "forbidden_colors": ["#7351B7", "Purple", "Magenta", "Teal Green"],
+    "rules": [
+      "No full-screen gradients. Use matte solid colors.",
+      "Use #CCFF00 (Volt Green) strictly for live status, progress, and 'kinetic triggers' (e.g., active AI computing, live match running).",
+      "Use #FF1E56 for CTAs and critical alerts.",
+      "Text over images MUST have text-shadow to meet WCAG AA contrast, or use a black gradient overlay (bg-black/40)."
+    ]
+  },
+  "visual_enhancers": {
+    "surface_strategies": [
+      "Glassmorphism (Crystal Variant): For sticky headers and floating AI Chatbot. Use backdrop-blur-xl bg-black/60 border border-white/10. NEVER use fully transparent backgrounds for overlays.",
+      "Neumorphism (Tactile): Do not use soft shadows. Use 'Tactile Minimalism' with sharp 1px borders and no soft box-shadows.",
+      "Grid Borders (Technical Look): Use for the Ops Dashboard. Elements divided by 1px border-white/10 lines instead of floating cards."
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "rules": "Use Lucide-React. Do NOT use AI emoji characters for icons."
+    }
+  },
+  "layouts": {
+    "spacing": "Generous Spacing Philosophy. Use p-6, p-8, or p-12. Avoid cramped layouts.",
+    "grid_system": {
+      "role_landing": "Asymmetric Bento Grid (MODE A). Mix large hero imagery (col-span-8) with narrow tall stats or role selectors (col-span-4).",
+      "ops_dashboard": "High Density Grid (MODE B). Tight gaps (gap-4). Every pixel utilized, h-full on children to ensure stretching."
+    },
+    "sections": {
+      "hero_role_switcher": "Split screen or bold asymmetric blocks. Hovering on a role (Fan, Staff) shifts the background image.",
+      "scoreboard_ticker": "Use react-fast-marquee for live match updates, incident feeds, and transport ETAs running horizontally across the top or bottom.",
+      "ai_concierge": "Side drawer or floating window with dark-glass UI, featuring quick-prompt chips.",
+      "incident_board": "Terminal/Data layout. Rows of data with strict alignment and high contrast."
+    }
+  },
+  "components": {
+    "buttons": "Sharp rectangular buttons (rounded-none or max rounded-sm). bg-[#FF1E56] text-white hover:bg-[#D81143]. Kinetic triggers use border-[#CCFF00] text-[#CCFF00].",
+    "inputs_and_forms": "Shadcn components heavily customized: border-white/20 bg-transparent text-white. Focus state: ring-2 ring-[#FF1E56].",
+    "cards": "Cardless style. Flat surfaces with 1px border-white/10, no radius (rounded-none).",
+    "charts": "Recharts. Use monochromatic white/grey lines with #CCFF00 (Volt) for the primary data series and #FF1E56 for anomalies.",
+    "heatmap_tiles": "Grid of small square divs colored based on crowd density. Green (#00FF87), Yellow (#FFD600), Red (#FF1E56)."
+  },
+  "motion": {
+    "rules": [
+      "Snappy and precise. No floaty easing.",
+      "Staggered reveals for dashboard KPIs and lists.",
+      "Hover states MUST explicitly change text and background color for contrast (e.g., hover:bg-white hover:text-black).",
+      "Respect prefers-reduced-motion."
+    ]
+  },
+  "accessibility": {
+    "contrast": "Strict adherence to WCAG AA. Minimum 4.5:1 for normal text.",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., data-testid='role-fan-btn', data-testid='ai-chat-input').",
+    "focus": "Clear focus rings on all interactive elements. focus:ring-2 focus:ring-[#CCFF00] focus:outline-none.",
+    "features": [
+      "High contrast mode toggles",
+      "Screen reader friendly attributes (aria-labels)",
+      "Accessibility Assistant view clearly separated with large tap targets."
+    ]
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.pexels.com/photos/35898730/pexels-photo-35898730.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Hero Background / Stadium Overview",
+        "description": "Dramatic aerial night view of an illuminated soccer stadium. Perfect for the main landing page background with a heavy bg-black/50 overlay."
+      },
+      {
+        "url": "https://images.pexels.com/photos/19875973/pexels-photo-19875973.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "Fan Role Profile / Dashboard Image",
+        "description": "Soccer fans cheering with flags, great for 'Fan' persona selector."
+      },
+      {
+        "url": "https://images.pexels.com/photos/14567020/pexels-photo-14567020.jpeg",
+        "category": "Smart Transportation Advisor",
+        "description": "Modern subway train. Use for the transit recommendation card."
+      },
+      {
+        "url": "https://images.pexels.com/photos/3582392/pexels-photo-3582392.jpeg",
+        "category": "Staff/Operations Role Profile",
+        "description": "Modern control room panel, perfect for 'Staff' or 'Organizer' role selector."
+      }
+    ]
+  },
+  "3d_libraries_and_steps": {
+    "recommendation": "Use framer-motion for micro-interactions and react-fast-marquee for scoreboard tickers. 3D is not strictly necessary for this high-density dashboard, but Recharts is mandatory for data visualization.",
+    "commands": [
+      "yarn add framer-motion",
+      "yarn add react-fast-marquee",
+      "yarn add recharts",
+      "yarn add lucide-react"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Focus on building a hybrid app with distinct flows: Role Selection Landing Page, Fan Experience (AI Concierge, Transport), and Staff Ops Dashboard (Real-time heatmaps, Incidents).",
+    "Implement a 'Marquee' across the top or bottom of the screen showing live Match Scores, Transportation Alerts, and Ops incidents using react-fast-marquee. Make it look like a stadium scoreboard.",
+    "For the Heatmap, build a CSS Grid of tiles showing crowd density at different stadium zones.",
+    "Use pure HTML + Tailwind for complex asymmetric hero layouts, not restrictive UI library wrappers.",
+    "Make sure all components are highly accessible, prioritizing data visibility, color contrast, and focus states."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "DO NOT use Inter or generic fonts. Strictly use Oswald for Headings and IBM Plex Sans for body.",
+    "DO NOT make generic centered layouts or simplistic gradients. Create depth through layered design and sharp 1px borders.",
+    "DO NOT use the default Vercel/Stripe look. The aesthetic must be 'Elite Athleticism & Precision' - dark, intense, and highly functional.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "All interactive and key informational elements MUST include a `data-testid` attribute.",
+    "Never use fully transparent header backgrounds if content scrolls under them. Use backdrop-blur with a dark tint.",
+    "DO NOT center align the app container (.App { text-align: center; } is banned).",
+    "Only use modern, sharp rectangular button styles. Hover states must be distinct.",
+    "Never use placeholder URLs (via.placeholder.com). ONLY use the image URLs provided in the media section.",
+    "If any component needs icon, use lucide-react."
+  ]
+}

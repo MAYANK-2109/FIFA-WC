@@ -1,0 +1,7 @@
+/* App-level tweaks */
+.App {
+    min-height: 100vh;
+    background: #0a0a0a;
+    color: #fff;
+    text-align: left;
+}
