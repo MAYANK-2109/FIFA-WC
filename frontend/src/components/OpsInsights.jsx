@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { opsInsights } from "../lib/api";
 import { Brain, Loader2, RefreshCw } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +8,7 @@ export default function OpsInsights({ venue, autoLoad = true }) {
     const [loading, setLoading] = useState(false);
     const [err, setErr] = useState(null);
 
-    const load = async () => {
+    const load = useCallback(async () => {
         if (!venue) return;
         setLoading(true);
         setErr(null);
@@ -19,11 +19,11 @@ export default function OpsInsights({ venue, autoLoad = true }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [venue]);
 
     useEffect(() => {
         if (autoLoad) load();
-    }, [venue?.id, autoLoad]);
+    }, [load, autoLoad]);
 
     return (
         <section data-testid="ops-insights" className="flex flex-col h-full p-5">
