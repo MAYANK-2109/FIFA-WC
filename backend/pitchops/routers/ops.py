@@ -9,7 +9,7 @@ from fastapi import APIRouter, Request
 
 from pitchops.constants import VENUES_BY_ID
 from pitchops.errors import require_venue
-from pitchops.models import OpsInsightRequest
+from pitchops.models import CrowdSnapshot, OpsInsightRequest
 from pitchops.services import db as db_repo
 from pitchops.simulation import crowd_snapshot
 
@@ -18,13 +18,17 @@ router = APIRouter()
 
 _OPS_SYSTEM_PROMPT = (
     "You are the AI Operations Officer for a FIFA World Cup 2026 stadium. "
-    "Given the live snapshot, write a decisive 4-bullet briefing for the on-duty commander. "
-    "Rules: (1) plain text bullets prefixed with '• ', (2) each ≤ 22 words, (3) actionable + specific, "
+    "Given the live snapshot, write a decisive 4-bullet briefing "
+    "for the duty commander. "
+    "Rules: (1) plain text bullets prefixed with '\u2022 ', "
+    "(2) each \u2264 22 words, (3) actionable + specific, "
     "(4) reference zones/gates by name where useful, (5) English only."
 )
 
 
-def _build_ops_user_prompt(venue: dict, crowd: dict, incidents: list[dict]) -> str:
+def _build_ops_user_prompt(
+    venue: dict, crowd: CrowdSnapshot, incidents: list[dict]
+) -> str:
     """Construct the LLM user prompt from live data (pure function)."""
     hot = sorted(crowd["zones"], key=lambda z: -z["density_pct"])[:3]
     hot_str = ", ".join(f"{z['zone']}({z['density_pct']}%)" for z in hot)
@@ -38,13 +42,15 @@ def _build_ops_user_prompt(venue: dict, crowd: dict, incidents: list[dict]) -> s
     )
 
 
-def _ops_fallback_briefing(crowd: dict, incidents: list[dict]) -> str:
+def _ops_fallback_briefing(crowd: CrowdSnapshot, incidents: list[dict]) -> str:
     """Generate a static fallback briefing when the LLM is unavailable."""
     return (
-        f"• Occupancy at {crowd['occupancy_pct']}% — monitor NE/NW pressure zones.\n"
-        f"• {len(incidents)} open incidents — prioritise medical & security categories.\n"
-        f"• Gate flow balanced; watch for wait spikes above 15 minutes.\n"
-        f"• Escalate any CRITICAL incident to command within 60 seconds."
+        f"\u2022 Occupancy at {crowd['occupancy_pct']}%"
+        f" — monitor NE/NW pressure zones.\n"
+        f"\u2022 {len(incidents)} open incidents"
+        f" — prioritise medical & security categories.\n"
+        f"\u2022 Gate flow balanced; watch for wait spikes above 15 minutes.\n"
+        f"\u2022 Escalate any CRITICAL incident to command within 60 seconds."
     )
 
 

@@ -18,10 +18,10 @@ from pitchops.models import (
     TransportRequest,
 )
 
-
 # ────────────────────────────────────────────────────────────────────────────
 # ChatRequest
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestChatRequest:
     def test_valid_minimal(self):
@@ -74,6 +74,7 @@ class TestChatRequest:
 # IncidentIn
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestIncidentIn:
     def test_valid_defaults(self):
         inc = IncidentIn(venue_id="metlife", description="Water spill near gate B")
@@ -114,6 +115,7 @@ class TestIncidentIn:
 # Incident (response model)
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestIncident:
     def _valid_kwargs(self, **overrides) -> dict:
         base = dict(
@@ -151,6 +153,7 @@ class TestIncident:
     def test_created_at_is_iso_string(self):
         inc = Incident(**self._valid_kwargs())
         from datetime import datetime
+
         # Should parse without error
         datetime.fromisoformat(inc.created_at)
 
@@ -166,6 +169,7 @@ class TestIncident:
 # TransportRequest
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestTransportRequest:
     def test_defaults(self):
         req = TransportRequest(venue_id="metlife", origin="Times Square")
@@ -173,7 +177,9 @@ class TestTransportRequest:
         assert req.accessibility is False
 
     def test_accessibility_flag(self):
-        req = TransportRequest(venue_id="metlife", origin="Newark Penn", accessibility=True)
+        req = TransportRequest(
+            venue_id="metlife", origin="Newark Penn", accessibility=True
+        )
         assert req.accessibility is True
 
     def test_empty_origin_raises(self):
@@ -188,6 +194,7 @@ class TestTransportRequest:
 # ────────────────────────────────────────────────────────────────────────────
 # AccessibilityRouteRequest
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestAccessibilityRouteRequest:
     def test_defaults(self):
@@ -212,6 +219,7 @@ class TestAccessibilityRouteRequest:
 # ────────────────────────────────────────────────────────────────────────────
 # OpsInsightRequest
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestOpsInsightRequest:
     def test_valid(self):

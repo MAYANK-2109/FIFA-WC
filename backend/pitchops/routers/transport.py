@@ -18,7 +18,8 @@ router = APIRouter()
 _TRANSPORT_SYSTEM_TEMPLATE = (
     "You are a FIFA 2026 transport concierge. Reply in {language}. "
     "Given options from origin to venue, pick the best and justify in ≤ 45 words. "
-    "Consider ETA, cost, sustainability (lower CO2 preferred), and accessibility if requested. "
+    "Consider ETA, cost, sustainability (lower CO2 preferred), "
+    "and accessibility if requested. "
     "Return ONLY: '<mode>: <one-sentence justification>'."
 )
 
@@ -33,11 +34,41 @@ def _build_transport_options(
     bucket = int(now_ts // 300)
     rng = seeded_rand(venue_id, origin, str(bucket))
     options = [
-        {"mode": "Metro / Subway",   "eta_min": rng.randint(18, 42), "cost_usd": rng.randint(3, 8),   "co2_kg": round(rng.uniform(0.4, 1.2), 2), "accessible": True},
-        {"mode": "Official Shuttle", "eta_min": rng.randint(22, 55), "cost_usd": rng.randint(0, 5),   "co2_kg": round(rng.uniform(0.6, 1.6), 2), "accessible": True},
-        {"mode": "Rideshare",        "eta_min": rng.randint(15, 40), "cost_usd": rng.randint(18, 55), "co2_kg": round(rng.uniform(2.2, 5.4), 2), "accessible": True},
-        {"mode": "Bike / Scooter",   "eta_min": rng.randint(25, 60), "cost_usd": rng.randint(0, 6),   "co2_kg": 0.0,                              "accessible": False},
-        {"mode": "Walking",          "eta_min": rng.randint(35, 90), "cost_usd": 0,                   "co2_kg": 0.0,                              "accessible": True},
+        {
+            "mode": "Metro / Subway",
+            "eta_min": rng.randint(18, 42),
+            "cost_usd": rng.randint(3, 8),
+            "co2_kg": round(rng.uniform(0.4, 1.2), 2),
+            "accessible": True,
+        },
+        {
+            "mode": "Official Shuttle",
+            "eta_min": rng.randint(22, 55),
+            "cost_usd": rng.randint(0, 5),
+            "co2_kg": round(rng.uniform(0.6, 1.6), 2),
+            "accessible": True,
+        },
+        {
+            "mode": "Rideshare",
+            "eta_min": rng.randint(15, 40),
+            "cost_usd": rng.randint(18, 55),
+            "co2_kg": round(rng.uniform(2.2, 5.4), 2),
+            "accessible": True,
+        },
+        {
+            "mode": "Bike / Scooter",
+            "eta_min": rng.randint(25, 60),
+            "cost_usd": rng.randint(0, 6),
+            "co2_kg": 0.0,
+            "accessible": False,
+        },
+        {
+            "mode": "Walking",
+            "eta_min": rng.randint(35, 90),
+            "cost_usd": 0,
+            "co2_kg": 0.0,
+            "accessible": True,
+        },
     ]
     if accessibility:
         options = [o for o in options if o["accessible"]]
@@ -47,7 +78,10 @@ def _build_transport_options(
 def _transport_fallback(options: list[dict]) -> str:
     """Select the best option heuristically when LLM is unavailable (pure)."""
     best = min(options, key=lambda o: (o["co2_kg"], o["eta_min"], o["cost_usd"]))
-    return f"{best['mode']}: fastest low-carbon option at {best['eta_min']} min for ${best['cost_usd']}."
+    return (
+        f"{best['mode']}: fastest low-carbon option"
+        f" at {best['eta_min']} min for ${best['cost_usd']}."
+    )
 
 
 @router.post("/transport/recommend")
@@ -59,10 +93,15 @@ async def transport_recommend(req: TransportRequest, request: Request) -> dict:
     """
     venue = require_venue(VENUES_BY_ID, req.venue_id)
     now_ts = datetime.now(timezone.utc).timestamp()
-    options = _build_transport_options(req.venue_id, req.origin, now_ts, req.accessibility)
+    options = _build_transport_options(
+        req.venue_id, req.origin, now_ts, req.accessibility
+    )
 
     system = _TRANSPORT_SYSTEM_TEMPLATE.format(language=req.language)
-    user = f"Origin: {req.origin}. Venue: {venue['name']}, {venue['city']}. Accessibility required: {req.accessibility}. Options: {options}"
+    user = (
+        f"Origin: {req.origin}. Venue: {venue['name']}, {venue['city']}. "
+        f"Accessibility required: {req.accessibility}. Options: {options}"
+    )
 
     llm_fn = request.app.state.llm_fn
     try:

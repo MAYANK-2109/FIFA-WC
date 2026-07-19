@@ -7,10 +7,11 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter
 
 from pitchops.constants import MATCHES, VENUES, VENUES_BY_ID
-from pitchops.errors import VenueNotFoundError, require_venue
+from pitchops.errors import require_venue
+from pitchops.models import CrowdSnapshot, SustainabilitySnapshot
 from pitchops.simulation import crowd_snapshot, sustainability_snapshot
 
 router = APIRouter()
@@ -44,7 +45,7 @@ async def list_matches() -> dict:
 
 
 @router.get("/crowd/{venue_id}")
-async def crowd(venue_id: str) -> dict:
+async def crowd(venue_id: str) -> CrowdSnapshot:
     """Return the live crowd density snapshot for *venue_id*.
 
     Raises:
@@ -55,7 +56,7 @@ async def crowd(venue_id: str) -> dict:
 
 
 @router.get("/sustainability/{venue_id}")
-async def sustainability(venue_id: str) -> dict:
+async def sustainability(venue_id: str) -> SustainabilitySnapshot:
     """Return hourly sustainability KPIs for *venue_id*.
 
     Raises:

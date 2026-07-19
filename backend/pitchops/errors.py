@@ -9,12 +9,10 @@ Design rules:
 
 from __future__ import annotations
 
-from typing import NoReturn
-
-
 # ─────────────────────────────────────────────────────────────
 # Domain exception hierarchy
 # ─────────────────────────────────────────────────────────────
+
 
 class PitchOpsError(Exception):
     """Base class for all PITCH.OPS domain errors."""
@@ -49,9 +47,9 @@ class LLMUnavailableError(PitchOpsError):
 
 #: Maps domain error type → (HTTP status code, detail string override or None)
 _ERROR_MAP: dict[type[PitchOpsError], tuple[int, str | None]] = {
-    VenueNotFoundError:    (404, None),
+    VenueNotFoundError: (404, None),
     IncidentNotFoundError: (404, None),
-    LLMUnavailableError:   (503, None),
+    LLMUnavailableError: (503, None),
 }
 
 

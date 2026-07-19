@@ -1,7 +1,9 @@
 """Unit tests for pitchops.services.db."""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock
+
+import pytest
+
 from pitchops.services import db
 
 

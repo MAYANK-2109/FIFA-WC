@@ -18,13 +18,18 @@ from pydantic import BaseModel, Field, StringConstraints
 # Shared string constraints
 # ─────────────────────────────────────────────────────────────
 
-NonEmptyStr = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
-ShortStr    = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=64)]
+NonEmptyStr = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)
+]
+ShortStr = Annotated[
+    str, StringConstraints(strip_whitespace=True, min_length=1, max_length=64)
+]
 
 
 # ─────────────────────────────────────────────────────────────
 # Request / Response models
 # ─────────────────────────────────────────────────────────────
+
 
 class ChatRequest(BaseModel):
     """Payload for a concierge chat turn."""
@@ -92,6 +97,7 @@ class OpsInsightRequest(BaseModel):
 # ─────────────────────────────────────────────────────────────
 # Internal TypedDicts (not serialised to/from HTTP directly)
 # ─────────────────────────────────────────────────────────────
+
 
 class TriageResult(TypedDict):
     """Output of the triage step — both heuristic and AI paths."""

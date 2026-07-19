@@ -19,12 +19,17 @@ import hashlib
 import random  # nosec B311 — seeded simulation only, not security-sensitive
 from typing import Literal
 
-from pitchops.models import CrowdSnapshot, CrowdZone, GateSnapshot, SustainabilitySnapshot
-
+from pitchops.models import (
+    CrowdSnapshot,
+    CrowdZone,
+    GateSnapshot,
+    SustainabilitySnapshot,
+)
 
 # ─────────────────────────────────────────────────────────────
 # Core PRNG helper
 # ─────────────────────────────────────────────────────────────
+
 
 def seeded_rand(*parts: str) -> random.Random:
     """Return a deterministic :class:`random.Random` instance seeded from *parts*.
@@ -47,6 +52,7 @@ def seeded_rand(*parts: str) -> random.Random:
 # Crowd simulation helpers (all pure)
 # ─────────────────────────────────────────────────────────────
 
+
 def zone_status(density_pct: int) -> Literal["CRITICAL", "HIGH", "MEDIUM", "LOW"]:
     """Classify crowd density into an operational status label.
 
@@ -65,7 +71,9 @@ def zone_status(density_pct: int) -> Literal["CRITICAL", "HIGH", "MEDIUM", "LOW"
     return "LOW"
 
 
-def build_zone(zone_name: str, capacity_per_zone: float, rng: random.Random) -> CrowdZone:
+def build_zone(
+    zone_name: str, capacity_per_zone: float, rng: random.Random
+) -> CrowdZone:
     """Build a single zone reading from the given RNG state.
 
     Args:
@@ -144,6 +152,7 @@ def crowd_snapshot(venue: dict, now_ts: float) -> CrowdSnapshot:
 # Sustainability simulation (pure)
 # ─────────────────────────────────────────────────────────────
 
+
 def sustainability_snapshot(venue: dict, now_ts: float) -> SustainabilitySnapshot:
     """Compute hourly sustainability KPIs for a venue.
 
@@ -178,7 +187,9 @@ def sustainability_snapshot(venue: dict, now_ts: float) -> SustainabilitySnapsho
 # Internal helpers
 # ─────────────────────────────────────────────────────────────
 
+
 def _iso_from_ts(ts: float) -> str:
     """Convert a Unix timestamp to an ISO 8601 UTC string."""
     from datetime import datetime, timezone
+
     return datetime.fromtimestamp(ts, tz=timezone.utc).isoformat()

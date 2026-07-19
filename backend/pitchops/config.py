@@ -12,6 +12,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from dotenv import load_dotenv
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Load .env relative to this file's parent (backend/)
@@ -27,8 +28,8 @@ class Settings(BaseSettings):
     cryptic ``KeyError`` deep inside request handlers.
     """
 
-    mongo_url: str
-    db_name: str
+    mongo_url: str = ""
+    db_name: str = ""
     google_api_key: str = ""
     llm_model: str = "gemini-2.0-flash"
     cors_origins: str = "*"
@@ -40,6 +41,15 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def _require_db_fields(self) -> "Settings":
+        """Raise at startup if critical DB settings are missing."""
+        if not self.mongo_url:
+            raise ValueError("MONGO_URL environment variable is required but not set.")
+        if not self.db_name:
+            raise ValueError("DB_NAME environment variable is required but not set.")
+        return self
 
     @property
     def cors_origins_list(self) -> list[str]:

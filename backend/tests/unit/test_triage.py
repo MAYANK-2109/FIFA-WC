@@ -10,31 +10,39 @@ No env vars, no DB, no network required.
 from __future__ import annotations
 
 import json
+
 import pytest
 
 from pitchops.triage import ai_triage, heuristic_triage, match_rule, parse_triage_json
-
 
 # ────────────────────────────────────────────────────────────────────────────
 # match_rule
 # ────────────────────────────────────────────────────────────────────────────
 
 SAMPLE_RULES: list[tuple[str, tuple[str, ...]]] = [
-    ("MEDICAL",  ("injur", "hurt", "medic", "unconscious")),
+    ("MEDICAL", ("injur", "hurt", "medic", "unconscious")),
     ("SECURITY", ("fight", "weapon", "threat")),
 ]
 
+
 class TestMatchRule:
     def test_first_match_wins(self):
-        assert match_rule("person unconscious near gate", SAMPLE_RULES, "OTHER") == "MEDICAL"
+        assert (
+            match_rule("person unconscious near gate", SAMPLE_RULES, "OTHER")
+            == "MEDICAL"
+        )
 
     def test_default_when_no_match(self):
         assert match_rule("broken toilet", SAMPLE_RULES, "OTHER") == "OTHER"
 
     def test_case_sensitivity(self):
         """Rules operate on the caller's text; caller should pass lowercased text."""
-        assert match_rule("Injur", SAMPLE_RULES, "OTHER") == "OTHER"   # uppercase → no match
-        assert match_rule("injur", SAMPLE_RULES, "OTHER") == "MEDICAL" # lowercase → match
+        assert (
+            match_rule("Injur", SAMPLE_RULES, "OTHER") == "OTHER"
+        )  # uppercase → no match
+        assert (
+            match_rule("injur", SAMPLE_RULES, "OTHER") == "MEDICAL"
+        )  # lowercase → match
 
     def test_partial_keyword_match(self):
         """Keyword 'injur' matches 'injured'."""
@@ -53,6 +61,7 @@ class TestMatchRule:
 # heuristic_triage
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestHeuristicTriage:
     def test_medical_category(self):
         result = heuristic_triage("Person fainted near section 103")
@@ -67,7 +76,9 @@ class TestHeuristicTriage:
         assert result["category"] == "LOST_ITEM"
 
     def test_crowd_category(self):
-        result = heuristic_triage("Crowd surge near the south entrance causing a blockage")
+        result = heuristic_triage(
+            "Crowd surge near the south entrance causing a blockage"
+        )
         assert result["category"] == "CROWD"
 
     def test_facilities_category(self):
@@ -109,12 +120,18 @@ class TestHeuristicTriage:
 
     def test_all_required_keys_present(self):
         result = heuristic_triage("Test incident")
-        assert set(result.keys()) == {"category", "severity", "summary", "recommended_action"}
+        assert set(result.keys()) == {
+            "category",
+            "severity",
+            "summary",
+            "recommended_action",
+        }
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # parse_triage_json
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestParseTriageJson:
     def _valid_json(self, **overrides) -> str:
@@ -186,20 +203,23 @@ class TestParseTriageJson:
 # ai_triage — injected LLM (no mocking framework needed)
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestAiTriage:
     """Tests for the async ai_triage function with injected llm_fn."""
 
     @pytest.mark.asyncio
     async def test_uses_llm_result_when_valid(self):
         """When LLM returns valid JSON, that result should be used."""
-        llm_response = json.dumps({
-            "category": "SECURITY",
-            "severity": "CRITICAL",
-            "summary": "Weapon spotted near Gate C.",
-            "recommended_action": "Dispatch Security Command immediately.",
-        })
+        llm_response = json.dumps(
+            {
+                "category": "SECURITY",
+                "severity": "CRITICAL",
+                "summary": "Weapon spotted near Gate C.",
+                "recommended_action": "Dispatch Security Command immediately.",
+            }
+        )
 
-        async def mock_llm(system: str, user: str) -> str:
+        async def mock_llm(_system: str, _user: str) -> str:
             return llm_response
 
         result = await ai_triage("weapon spotted", "staff", "MetLife Stadium", mock_llm)
@@ -209,7 +229,8 @@ class TestAiTriage:
     @pytest.mark.asyncio
     async def test_falls_back_to_heuristic_on_llm_error(self):
         """When LLM raises an exception, heuristic fallback is used silently."""
-        async def failing_llm(system: str, user: str) -> str:
+
+        async def failing_llm(_system: str, _user: str) -> str:
             raise RuntimeError("LLM quota exceeded")
 
         result = await ai_triage(
@@ -225,7 +246,8 @@ class TestAiTriage:
     @pytest.mark.asyncio
     async def test_falls_back_to_heuristic_on_invalid_json(self):
         """When LLM returns unparseable text, heuristic fallback is used."""
-        async def bad_json_llm(system: str, user: str) -> str:
+
+        async def bad_json_llm(_system: str, _user: str) -> str:
             return "Sorry, I cannot process this."
 
         result = await ai_triage(
@@ -239,14 +261,16 @@ class TestAiTriage:
     @pytest.mark.asyncio
     async def test_empty_summary_filled_from_description(self):
         """An empty summary in the LLM response should be filled from description."""
-        llm_response = json.dumps({
-            "category": "FACILITIES",
-            "severity": "LOW",
-            "summary": "",
-            "recommended_action": "Dispatch Facilities.",
-        })
+        llm_response = json.dumps(
+            {
+                "category": "FACILITIES",
+                "severity": "LOW",
+                "summary": "",
+                "recommended_action": "Dispatch Facilities.",
+            }
+        )
 
-        async def mock_llm(system: str, user: str) -> str:
+        async def mock_llm(_system: str, _user: str) -> str:
             return llm_response
 
         desc = "Restroom light is flickering"
@@ -259,7 +283,7 @@ class TestAiTriage:
         """Verify venue_name is passed through to the LLM user prompt."""
         captured: list[str] = []
 
-        async def capturing_llm(system: str, user: str) -> str:
+        async def capturing_llm(_system: str, user: str) -> str:
             captured.append(user)
             raise RuntimeError("force heuristic")
 
@@ -269,9 +293,21 @@ class TestAiTriage:
     @pytest.mark.asyncio
     async def test_result_always_has_required_keys(self):
         """Result always has all four required keys regardless of LLM outcome."""
-        async def mock_llm(system: str, user: str) -> str:
-            return json.dumps({"category": "OTHER", "severity": "LOW",
-                               "summary": "x", "recommended_action": "y"})
+
+        async def mock_llm(_system: str, _user: str) -> str:
+            return json.dumps(
+                {
+                    "category": "OTHER",
+                    "severity": "LOW",
+                    "summary": "x",
+                    "recommended_action": "y",
+                }
+            )
 
         result = await ai_triage("test", "fan", "BMO Field", mock_llm)
-        assert set(result.keys()) == {"category", "severity", "summary", "recommended_action"}
+        assert set(result.keys()) == {
+            "category",
+            "severity",
+            "summary",
+            "recommended_action",
+        }

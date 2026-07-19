@@ -20,6 +20,7 @@ logger = logging.getLogger("pitchops.llm")
 # Client factory
 # ─────────────────────────────────────────────────────────────
 
+
 def make_llm_client(api_key: str) -> genai.Client:
     """Construct and return a :class:`genai.Client` for *api_key*.
 
@@ -38,6 +39,7 @@ def make_llm_client(api_key: str) -> genai.Client:
 # ─────────────────────────────────────────────────────────────
 # One-shot async call with retry
 # ─────────────────────────────────────────────────────────────
+
 
 async def llm_oneshot(
     system: str,
@@ -83,7 +85,7 @@ async def llm_oneshot(
                         ),
                     ),
                 )
-            return response.text.strip()
+            return (response.text or "").strip()
         except Exception as exc:  # noqa: BLE001
             last_err = exc
             msg = str(exc).lower()
@@ -113,8 +115,10 @@ def make_llm_fn(
     Returns:
         An async callable ``(system: str, user: str) -> str``.
     """
+
     async def _fn(system: str, user: str) -> str:
         return await llm_oneshot(
             system, user, client=client, model=model, semaphore=semaphore
         )
+
     return _fn

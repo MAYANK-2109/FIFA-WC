@@ -29,6 +29,7 @@ logger = logging.getLogger("pitchops.triage")
 # Pure helpers
 # ─────────────────────────────────────────────────────────────
 
+
 def match_rule(
     text: str,
     rules: list[tuple[str, tuple[str, ...]]],
@@ -102,7 +103,9 @@ def parse_triage_json(raw: str) -> TriageResult | None:
         category=category if category in ALLOWED_CATEGORIES else "OTHER",
         severity=severity if severity in ALLOWED_SEVERITIES else "MEDIUM",
         summary=str(data.get("summary", ""))[:200],
-        recommended_action=str(data.get("recommended_action", "Dispatch nearest team."))[:220],
+        recommended_action=str(
+            data.get("recommended_action", "Dispatch nearest team.")
+        )[:220],
     )
 
 
@@ -113,7 +116,8 @@ def parse_triage_json(raw: str) -> TriageResult | None:
 _TRIAGE_SYSTEM_PROMPT = (
     "You are the incident triage system for a FIFA World Cup 2026 stadium ops center. "
     "Given a raw report, respond with ONLY a compact JSON object with keys: "
-    "category (one of MEDICAL, SECURITY, CROWD, FACILITIES, LOST_ITEM, ACCESSIBILITY, TRANSPORT, OTHER), "
+    "category (one of MEDICAL, SECURITY, CROWD, FACILITIES, "
+    "LOST_ITEM, ACCESSIBILITY, TRANSPORT, OTHER), "
     "severity (LOW, MEDIUM, HIGH, CRITICAL), "
     "summary (<=140 chars neutral factual), "
     "recommended_action (<=180 chars imperative sentence)."

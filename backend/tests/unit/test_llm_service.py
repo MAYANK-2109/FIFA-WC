@@ -19,10 +19,10 @@ import pytest
 
 from pitchops.services.llm import llm_oneshot, make_llm_fn
 
-
 # ────────────────────────────────────────────────────────────────────────────
 # Helpers
 # ────────────────────────────────────────────────────────────────────────────
+
 
 def _make_client(response_text: str = "AI response"):
     """Return a mock genai.Client whose generate_content returns ``response_text``."""
@@ -45,14 +45,18 @@ def _make_failing_client(error_msg: str):
 # llm_oneshot
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestLlmOneshot:
     @pytest.mark.asyncio
     async def test_returns_stripped_text_on_success(self):
         client = _make_client("  Hello World  ")
         semaphore = asyncio.Semaphore(1)
         result = await llm_oneshot(
-            "system", "user",
-            client=client, model="test-model", semaphore=semaphore,
+            "system",
+            "user",
+            client=client,
+            model="test-model",
+            semaphore=semaphore,
         )
         assert result == "Hello World"
 
@@ -61,8 +65,11 @@ class TestLlmOneshot:
         client = _make_client("ok")
         semaphore = asyncio.Semaphore(1)
         await llm_oneshot(
-            "sys", "usr",
-            client=client, model="test-model", semaphore=semaphore,
+            "sys",
+            "usr",
+            client=client,
+            model="test-model",
+            semaphore=semaphore,
         )
         assert client.models.generate_content.call_count == 1
 
@@ -86,8 +93,12 @@ class TestLlmOneshot:
 
         with patch("asyncio.sleep", new_callable=AsyncMock):
             result = await llm_oneshot(
-                "sys", "usr",
-                client=client, model="m", semaphore=semaphore, retries=2,
+                "sys",
+                "usr",
+                client=client,
+                model="m",
+                semaphore=semaphore,
+                retries=2,
             )
         assert result == "success after retry"
         assert call_count == 3
@@ -112,8 +123,12 @@ class TestLlmOneshot:
 
         with patch("asyncio.sleep", new_callable=AsyncMock):
             result = await llm_oneshot(
-                "sys", "usr",
-                client=client, model="m", semaphore=semaphore, retries=1,
+                "sys",
+                "usr",
+                client=client,
+                model="m",
+                semaphore=semaphore,
+                retries=1,
             )
         assert result == "ok"
 
@@ -125,8 +140,11 @@ class TestLlmOneshot:
 
         with pytest.raises(RuntimeError, match="Internal server error"):
             await llm_oneshot(
-                "sys", "usr",
-                client=client, model="m", semaphore=semaphore,
+                "sys",
+                "usr",
+                client=client,
+                model="m",
+                semaphore=semaphore,
             )
         # Should only be called once (no retries)
         assert client.models.generate_content.call_count == 1
@@ -140,8 +158,12 @@ class TestLlmOneshot:
         with patch("asyncio.sleep", new_callable=AsyncMock):
             with pytest.raises(RuntimeError, match="429 rate limit"):
                 await llm_oneshot(
-                    "sys", "usr",
-                    client=client, model="m", semaphore=semaphore, retries=2,
+                    "sys",
+                    "usr",
+                    client=client,
+                    model="m",
+                    semaphore=semaphore,
+                    retries=2,
                 )
         # Called initial + 2 retries = 3 times
         assert client.models.generate_content.call_count == 3
@@ -154,16 +176,19 @@ class TestLlmOneshot:
         assert semaphore._value == 1
 
         # Run concurrently and check no exceptions
-        results = await asyncio.gather(*[
-            llm_oneshot("s", "u", client=client, model="m", semaphore=semaphore)
-            for _ in range(3)
-        ])
+        results = await asyncio.gather(
+            *[
+                llm_oneshot("s", "u", client=client, model="m", semaphore=semaphore)
+                for _ in range(3)
+            ]
+        )
         assert all(r == "ok" for r in results)
 
 
 # ────────────────────────────────────────────────────────────────────────────
 # make_llm_fn factory
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestMakeLlmFn:
     @pytest.mark.asyncio
@@ -201,36 +226,44 @@ class TestMakeLlmFn:
 # errors.py — require_venue / require_llm_key
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestErrorHelpers:
     def test_require_venue_returns_dict_on_hit(self):
         from pitchops.errors import require_venue
+
         registry = {"metlife": {"id": "metlife", "name": "MetLife Stadium"}}
         result = require_venue(registry, "metlife")
         assert result["name"] == "MetLife Stadium"
 
     def test_require_venue_raises_on_miss(self):
         from pitchops.errors import VenueNotFoundError, require_venue
+
         with pytest.raises(VenueNotFoundError) as exc_info:
             require_venue({}, "unknown")
         assert "unknown" in str(exc_info.value)
 
     def test_require_llm_key_returns_key_when_set(self):
         from pitchops.errors import require_llm_key
+
         assert require_llm_key("my-key") == "my-key"
 
     def test_require_llm_key_raises_when_empty(self):
         from pitchops.errors import LLMUnavailableError, require_llm_key
+
         with pytest.raises(LLMUnavailableError):
             require_llm_key("")
 
     def test_http_status_for_venue_error(self):
         from pitchops.errors import VenueNotFoundError, http_status_for
+
         assert http_status_for(VenueNotFoundError("x")) == 404
 
     def test_http_status_for_incident_error(self):
         from pitchops.errors import IncidentNotFoundError, http_status_for
+
         assert http_status_for(IncidentNotFoundError("x")) == 404
 
     def test_http_status_for_llm_error(self):
         from pitchops.errors import LLMUnavailableError, http_status_for
+
         assert http_status_for(LLMUnavailableError()) == 503

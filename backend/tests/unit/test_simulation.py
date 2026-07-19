@@ -40,6 +40,7 @@ FIXED_TS = 1_718_150_400.0  # 2026-06-12 00:00:00 UTC — arbitrary but stable
 # seeded_rand
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestSeededRand:
     def test_same_parts_same_output(self):
         """Identical parts must always produce the same PRNG state."""
@@ -59,6 +60,7 @@ class TestSeededRand:
     def test_returns_random_instance(self):
         """Return type must be random.Random."""
         import random
+
         assert isinstance(seeded_rand("a"), random.Random)
 
     def test_single_part(self):
@@ -78,17 +80,21 @@ class TestSeededRand:
 # zone_status
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestZoneStatus:
-    @pytest.mark.parametrize("density, expected", [
-        (91, "CRITICAL"),
-        (100, "CRITICAL"),
-        (90, "HIGH"),           # boundary: exactly 90 → HIGH not CRITICAL
-        (79, "HIGH"),
-        (78, "MEDIUM"),         # boundary: exactly 78 → MEDIUM
-        (56, "MEDIUM"),
-        (55, "LOW"),            # boundary: exactly 55 → LOW
-        (0,  "LOW"),
-    ])
+    @pytest.mark.parametrize(
+        "density, expected",
+        [
+            (91, "CRITICAL"),
+            (100, "CRITICAL"),
+            (90, "HIGH"),  # boundary: exactly 90 → HIGH not CRITICAL
+            (79, "HIGH"),
+            (78, "MEDIUM"),  # boundary: exactly 78 → MEDIUM
+            (56, "MEDIUM"),
+            (55, "LOW"),  # boundary: exactly 55 → LOW
+            (0, "LOW"),
+        ],
+    )
     def test_thresholds(self, density: int, expected: str):
         assert zone_status(density) == expected
 
@@ -100,6 +106,7 @@ class TestZoneStatus:
 # ────────────────────────────────────────────────────────────────────────────
 # build_zone
 # ────────────────────────────────────────────────────────────────────────────
+
 
 class TestBuildZone:
     def test_keys_present(self):
@@ -136,6 +143,7 @@ class TestBuildZone:
 # build_gate
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestBuildGate:
     def test_keys_present(self):
         rng = seeded_rand("gate-test")
@@ -166,11 +174,20 @@ class TestBuildGate:
 # crowd_snapshot
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestCrowdSnapshot:
     def test_returns_expected_keys(self):
         snap = crowd_snapshot(METLIFE, FIXED_TS)
-        for key in ("venue_id", "venue_name", "capacity", "occupancy",
-                    "occupancy_pct", "zones", "gates", "ts"):
+        for key in (
+            "venue_id",
+            "venue_name",
+            "capacity",
+            "occupancy",
+            "occupancy_pct",
+            "zones",
+            "gates",
+            "ts",
+        ):
             assert key in snap, f"Missing key: {key}"
 
     def test_venue_id_and_name(self):
@@ -229,12 +246,22 @@ class TestCrowdSnapshot:
 # sustainability_snapshot
 # ────────────────────────────────────────────────────────────────────────────
 
+
 class TestSustainabilitySnapshot:
     def test_returns_expected_keys(self):
         snap = sustainability_snapshot(METLIFE, FIXED_TS)
-        for key in ("venue_id", "venue_name", "waste_diversion_pct", "energy_kwh",
-                    "renewable_pct", "water_liters", "carbon_kg_co2e",
-                    "single_use_plastics_kg", "recycled_kg", "goal_waste_diversion_pct"):
+        for key in (
+            "venue_id",
+            "venue_name",
+            "waste_diversion_pct",
+            "energy_kwh",
+            "renewable_pct",
+            "water_liters",
+            "carbon_kg_co2e",
+            "single_use_plastics_kg",
+            "recycled_kg",
+            "goal_waste_diversion_pct",
+        ):
             assert key in snap, f"Missing key: {key}"
 
     def test_goal_waste_diversion_fixed(self):

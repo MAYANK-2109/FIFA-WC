@@ -50,6 +50,7 @@ logging.basicConfig(
 # Application factory
 # ─────────────────────────────────────────────────────────────
 
+
 def create_app() -> FastAPI:
     """Build and return the configured FastAPI application.
 
@@ -61,7 +62,9 @@ def create_app() -> FastAPI:
 
     # ── Exception handlers ────────────────────────────────────
     @application.exception_handler(PitchOpsError)
-    async def domain_error_handler(request: Request, exc: PitchOpsError) -> JSONResponse:
+    async def domain_error_handler(
+        request: Request, exc: PitchOpsError
+    ) -> JSONResponse:
         """Map every domain exception to the correct HTTP status in one place."""
         return JSONResponse(
             status_code=http_status_for(exc),
@@ -113,7 +116,9 @@ def create_app() -> FastAPI:
                 severity="MEDIUM",
                 department=DEPARTMENTS["FACILITIES"],
                 ai_summary="Wet floor near section 118 escalator — slip hazard.",
-                recommended_action="Dispatch facilities to place wet-floor signs and mop.",
+                recommended_action=(
+                    "Dispatch facilities to place wet-floor signs and mop."
+                ),
             )
             await db_repo.insert_incident(incidents_col, demo.model_dump())
 

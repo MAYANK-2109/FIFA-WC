@@ -45,8 +45,15 @@ def _build_concierge_system(venue_name: str, language: str, role: str) -> str:
 def _fallback_concierge_reply(language: str) -> str:
     """Return a static fallback when LLM is unavailable due to rate limits."""
     if language.lower() == "spanish":
-        return "El asistente AI no está disponible por límites de uso. Por favor, acuda a un miembro del personal o busque el baño accesible más cercano. Hay mostradores de información ubicados en cada nivel."
-    return "The AI concierge is currently unavailable due to high demand. Please approach a staff member for assistance."
+        return (
+            "El asistente AI no está disponible por límites de uso. "
+            "Por favor, acuda a un miembro del personal o busque el baño accesible "
+            "más cercano. Hay mostradores de información ubicados en cada nivel."
+        )
+    return (
+        "The AI concierge is currently unavailable due to high demand. "
+        "Please approach a staff member for assistance."
+    )
 
 
 @router.get("/concierge/history")
@@ -73,7 +80,9 @@ async def concierge_chat(req: ChatRequest, request: Request) -> StreamingRespons
     settings = request.app.state.settings
     require_llm_key(settings.google_api_key)
 
-    venue = VENUES_BY_ID.get(req.venue_id or "", {"name": "the assigned FIFA 2026 venue"})
+    venue = VENUES_BY_ID.get(
+        req.venue_id or "", {"name": "the assigned FIFA 2026 venue"}
+    )
     system = _build_concierge_system(
         venue_name=venue.get("name", "the assigned FIFA 2026 venue"),
         language=req.language,
@@ -96,13 +105,15 @@ async def concierge_chat(req: ChatRequest, request: Request) -> StreamingRespons
                 loop = asyncio.get_event_loop()
                 chunks = await loop.run_in_executor(
                     None,
-                    lambda: list(client.models.generate_content_stream(
-                        model=model,
-                        contents=req.message,
-                        config=genai_types.GenerateContentConfig(
-                            system_instruction=system,
-                        ),
-                    )),
+                    lambda: list(
+                        client.models.generate_content_stream(
+                            model=model,
+                            contents=req.message,
+                            config=genai_types.GenerateContentConfig(
+                                system_instruction=system,
+                            ),
+                        )
+                    ),
                 )
                 for chunk in chunks:
                     text = chunk.text if chunk.text else ""

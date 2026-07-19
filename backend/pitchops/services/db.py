@@ -21,6 +21,7 @@ logger = logging.getLogger("pitchops.db")
 # Incident repository
 # ─────────────────────────────────────────────────────────────
 
+
 async def insert_incident(collection: Any, doc: dict) -> None:
     """Insert a new incident document.
 
@@ -47,7 +48,9 @@ async def list_incidents(
         List of incident dicts (``_id`` field excluded).
     """
     query: dict = {"venue_id": venue_id} if venue_id else {}
-    return await collection.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    return (
+        await collection.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    )
 
 
 async def update_incident_status(
@@ -85,7 +88,9 @@ async def count_incidents(collection: Any, query: dict) -> int:
     return await collection.count_documents(query)
 
 
-async def list_open_incidents(collection: Any, venue_id: str, limit: int = 20) -> list[dict]:
+async def list_open_incidents(
+    collection: Any, venue_id: str, limit: int = 20
+) -> list[dict]:
     """Fetch non-resolved incidents for ops briefing.
 
     Args:
@@ -97,12 +102,15 @@ async def list_open_incidents(collection: Any, venue_id: str, limit: int = 20) -
         List of open/in-progress incident dicts.
     """
     query = {"venue_id": venue_id, "status": {"$ne": "RESOLVED"}}
-    return await collection.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    return (
+        await collection.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    )
 
 
 # ─────────────────────────────────────────────────────────────
 # Chat message repository
 # ─────────────────────────────────────────────────────────────
+
 
 async def persist_message(
     collection: Any,
@@ -118,12 +126,14 @@ async def persist_message(
         role: ``"user"`` or ``"assistant"``.
         content: Message text.
     """
-    await collection.insert_one({
-        "session_id": session_id,
-        "role": role,
-        "content": content,
-        "ts": datetime.now(timezone.utc).isoformat(),
-    })
+    await collection.insert_one(
+        {
+            "session_id": session_id,
+            "role": role,
+            "content": content,
+            "ts": datetime.now(timezone.utc).isoformat(),
+        }
+    )
 
 
 async def get_chat_history(collection: Any, session_id: str) -> list[dict]:
@@ -136,14 +146,17 @@ async def get_chat_history(collection: Any, session_id: str) -> list[dict]:
     Returns:
         List of message dicts (``_id`` excluded), ordered by ``ts`` ascending.
     """
-    return await collection.find(
-        {"session_id": session_id}, {"_id": 0}
-    ).sort("ts", 1).to_list(200)
+    return (
+        await collection.find({"session_id": session_id}, {"_id": 0})
+        .sort("ts", 1)
+        .to_list(200)
+    )
 
 
 # ─────────────────────────────────────────────────────────────
 # Index setup (called at startup)
 # ─────────────────────────────────────────────────────────────
+
 
 async def create_indexes(incidents_col: Any, messages_col: Any) -> None:
     """Create all required MongoDB indexes idempotently.

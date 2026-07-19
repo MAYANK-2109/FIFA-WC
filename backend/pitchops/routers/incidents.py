@@ -10,10 +10,10 @@ from __future__ import annotations
 import logging
 from typing import List, Literal, Optional
 
-from fastapi import APIRouter, HTTPException, Query, Request
+from fastapi import APIRouter, Query, Request
 
 from pitchops.constants import DEPARTMENTS, VENUES_BY_ID
-from pitchops.errors import IncidentNotFoundError, VenueNotFoundError, require_venue
+from pitchops.errors import IncidentNotFoundError, require_venue
 from pitchops.models import Incident, IncidentIn
 from pitchops.services import db as db_repo
 from pitchops.triage import ai_triage

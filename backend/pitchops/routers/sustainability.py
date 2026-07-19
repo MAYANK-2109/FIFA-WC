@@ -9,24 +9,27 @@ from fastapi import APIRouter, Request
 
 from pitchops.constants import VENUES_BY_ID
 from pitchops.errors import require_venue
-from pitchops.models import OpsInsightRequest
+from pitchops.models import OpsInsightRequest, SustainabilitySnapshot
 from pitchops.simulation import sustainability_snapshot
 
 logger = logging.getLogger("pitchops.sustainability")
 router = APIRouter()
 
 _SUSTAINABILITY_SYSTEM_PROMPT = (
-    "You are a stadium sustainability officer for FIFA 2026. Given hourly KPIs, write a 3-bullet "
-    "narrative (≤ 20 words each, prefixed with '• '). One positive, one risk, one action."
+    "You are a stadium sustainability officer for FIFA 2026. "
+    "Given hourly KPIs, write a 3-bullet narrative "
+    "(≤ 20 words each, prefixed with '\u2022 '). "
+    "One positive, one risk, one action."
 )
 
 
-def _sustainability_fallback(snap: dict) -> str:
+def _sustainability_fallback(snap: SustainabilitySnapshot) -> str:
     """Return a static narrative fallback when the LLM is unavailable (pure)."""
     return (
-        f"• Renewables at {snap['renewable_pct']}% — strong momentum vs 50% baseline.\n"
-        f"• Waste diversion at {snap['waste_diversion_pct']}% trails 90% goal.\n"
-        f"• Deploy extra sorting volunteers to concourse bins for next 60 minutes."
+        f"\u2022 Renewables at {snap['renewable_pct']}%"
+        f" — strong momentum vs 50% baseline.\n"
+        f"\u2022 Waste diversion at {snap['waste_diversion_pct']}% trails 90% goal.\n"
+        f"\u2022 Deploy extra sorting volunteers to concourse bins for next 60 minutes."
     )
 
 

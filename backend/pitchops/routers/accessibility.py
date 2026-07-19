@@ -14,11 +14,15 @@ logger = logging.getLogger("pitchops.accessibility")
 router = APIRouter()
 
 _ACCESSIBILITY_SYSTEM_TEMPLATE = (
-    "You are an accessibility navigator for a FIFA 2026 stadium. Reply in {language}. "
-    "Produce a numbered, step-by-step route (5-8 steps) from the entry gate to the seat, "
-    "prioritising step-free access, elevators, sensory-friendly rest zones, hearing loops, "
-    "guide-dog relief areas and accessible restrooms. Reference stadium landmarks generically "
-    "(elevator bank, concourse level, accessible ramp). Keep each step ≤ 22 words."
+    "You are an accessibility navigator for a FIFA 2026 stadium. "
+    "Reply in {language}. "
+    "Produce a numbered, step-by-step route (5-8 steps) "
+    "from the entry gate to the seat, "
+    "prioritising step-free access, elevators, sensory-friendly rest zones, "
+    "hearing loops, guide-dog relief areas and accessible restrooms. "
+    "Reference stadium landmarks generically "
+    "(elevator bank, concourse level, accessible ramp). "
+    "Keep each step ≤ 22 words."
 )
 
 
@@ -28,8 +32,10 @@ def _build_accessibility_fallback(entry_gate: str, seat_section: str) -> str:
         f"1. Enter through accessible entrance at Gate {entry_gate}.\n"
         f"2. Follow signage to the elevator bank in the main concourse.\n"
         f"3. Take the elevator to your seating level for section {seat_section}.\n"
-        f"4. Follow tactile floor guides along the concourse (hearing loop available).\n"
-        f"5. Accessible restrooms and sensory-friendly rest area located near section {seat_section}.\n"
+        f"4. Follow tactile floor guides along the concourse"
+        f" (hearing loop available).\n"
+        f"5. Accessible restrooms and sensory-friendly rest area"
+        f" located near section {seat_section}.\n"
         f"6. A steward is stationed at the section entry to assist with seating."
     )
 

@@ -28,6 +28,7 @@ def test_get_settings_overrides():
         assert settings.mongo_url == "mongodb://remote"
         assert settings.cors_origins_list == ["http://a.com", "http://b.com"]
 
+
 def test_cors_origins_list_empty():
     get_settings.cache_clear()
     env = {"CORS_ORIGINS": ""}
