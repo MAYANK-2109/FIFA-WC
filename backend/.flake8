@@ -1,0 +1,16 @@
+[flake8]
+# Align with Black's default line length to avoid false positives.
+# Black wraps at 88; flake8's default of 79 conflicts with Black's output.
+max-line-length = 88
+# E203: whitespace before ':' — Black formats slices this way, it's intentional.
+# W503: line break before binary operator — superseded by W504 and conflicts with Black.
+extend-ignore = E203, W503
+# Exclude virtual environments, caches, and migration files.
+exclude =
+    .git,
+    __pycache__,
+    .pytest_cache,
+    .mypy_cache,
+    *.egg-info,
+    build,
+    dist,
